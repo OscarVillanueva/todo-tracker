@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"errors"
+	"slices"
 	"task_traker/internal/database"
 	"task_traker/internal/models"
 )
@@ -45,5 +47,34 @@ func (reader List) Add(todoName string) (int, error) {
 }
 
 func (reader List) Delete(id int) (bool, error) {
-	return false, nil
+	db := database.Reader {
+		Name: "todos.json",
+	}
+
+	todoList := make([]models.Todo,0)
+
+	rError := db.Read(&todoList)
+
+	if (rError != nil) {
+		return false, rError
+	}
+
+	idx := slices.IndexFunc(todoList, func(todo models.Todo) bool {
+		return todo.Id == id
+	})
+	
+	if (idx < 0) {
+		return false, errors.New("the todo do not exist")
+	}
+	
+	firstPart := todoList[0:idx]
+	var secondPart []models.Todo
+
+	if (idx+1 < len(todoList)) {
+		secondPart = todoList[idx+1:]
+	}
+
+	newTodoList := append(firstPart, secondPart...)
+
+	return db.Write(newTodoList)
 }

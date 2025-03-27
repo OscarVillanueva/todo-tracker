@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"task_traker/internal/handlers"
 
@@ -29,6 +30,29 @@ func GetCommands() []*cli.Command {
 				}
 
 				fmt.Println("Todo created successfully: ", result)
+
+				return nil
+			},
+		},
+		{
+			Name: "delete",
+			Usage: "Remove a todo from the list",
+			Action: func(ctx *cli.Context) error {
+				id := ctx.Args().First()
+
+				parsed, err := strconv.ParseInt(id, 10, 16)
+
+				if (err != nil){
+					panic("Invalid todo id!")
+				}
+
+				_, delErr := reader.Delete(int(parsed))
+
+				if (delErr != nil){
+					panic(delErr)
+				}
+
+				fmt.Println("Todo deleted successfully: ", id)
 
 				return nil
 			},
