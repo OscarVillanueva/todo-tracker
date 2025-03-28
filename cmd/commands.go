@@ -57,5 +57,36 @@ func GetCommands() []*cli.Command {
 				return nil
 			},
 		},
+		{
+			Name: "update",
+			Usage: "Update the name of a todo",
+			Action: func(ctx *cli.Context) error {
+				if (ctx.Args().Len() < 2) {
+					panic("Missing arguments")
+				}
+
+				id := ctx.Args().First()
+				name := ctx.Args().Get(1)
+
+				parsed, err := strconv.ParseInt(id, 10, 16)
+
+				if (err != nil){
+					panic("Invalid todo id!")
+				}
+
+				if (strings.TrimSpace(name) == "") {
+					panic("Invalid name!")
+				}
+
+				_, updateError := reader.Update(int16(parsed), name)
+
+				if (updateError != nil){
+					panic(updateError)
+				}
+
+				fmt.Printf("The task %d was updated successfully", parsed)
+				return nil
+			},
+		},
 	}
 }

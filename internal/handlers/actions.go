@@ -9,7 +9,8 @@ import (
 
 type ListOperations interface {
 	Add() (int8, error)
-	Delete() (bool, error)
+	Delete(id int16) (bool, error)
+	Update(id int16, name string) (bool, error)
 }
 
 type List struct {}
@@ -77,4 +78,34 @@ func (reader List) Delete(id int) (bool, error) {
 	newTodoList := append(firstPart, secondPart...)
 
 	return db.Write(newTodoList)
+}
+
+func (reader List) Update(id int16, name string) (bool, error) {
+	db := database.Reader {
+		Name: "todos.json",
+	}
+
+	todoList := make([]models.Todo,0)
+
+	rError := db.Read(&todoList)
+
+	if (rError != nil) {
+		return false, rError
+	}
+
+	idx := slices.IndexFunc(todoList, func(todo models.Todo) bool {
+		return todo.Id == int(id)
+	})
+	
+	if (idx < 0) {
+		return false, errors.New("the todo do not exist")
+	}
+
+	todoList[idx] = models.Todo{
+		Id: int(id),
+		Name: name,
+		Status: todoList[idx].Status,
+	}
+
+	return true, nil
 }
