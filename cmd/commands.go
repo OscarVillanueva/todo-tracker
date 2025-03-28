@@ -88,5 +88,28 @@ func GetCommands() []*cli.Command {
 				return nil
 			},
 		},
+		{
+			Name: "in-progress",
+			Usage: "Mark a todo as in progress",
+			Aliases: []string{"prg"},
+			Action: func(ctx *cli.Context) error {
+				id := ctx.Args().First()
+
+				parsed, err := strconv.ParseInt(id, 10, 16)
+
+				if (err != nil){
+					panic("Invalid todo id!")
+				}
+
+				_, prgError := reader.Doing(int16(parsed))
+
+				if (prgError != nil) {
+					panic(prgError)
+				}
+
+				fmt.Println("Mark as in progress: ", id)
+				return nil
+			},
+		},
 	}
 }

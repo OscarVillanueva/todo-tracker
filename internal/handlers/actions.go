@@ -11,6 +11,8 @@ type ListOperations interface {
 	Add() (int8, error)
 	Delete(id int16) (bool, error)
 	Update(id int16, name string) (bool, error)
+
+	Doing(id int16) (bool, error)
 }
 
 type List struct {}
@@ -105,6 +107,48 @@ func (reader List) Update(id int16, name string) (bool, error) {
 		Id: int(id),
 		Name: name,
 		Status: todoList[idx].Status,
+	}
+
+	_, err := db.Write(todoList)
+
+	if (err != nil) {
+		return false, err
+	}
+
+	return true, nil
+}
+
+func (reader List) Doing(id int16) (bool, error) {
+	db := database.Reader {
+		Name: "todos.json",
+	}
+
+	todoList := make([]models.Todo,0)
+
+	rError := db.Read(&todoList)
+
+	if (rError != nil) {
+		return false, rError
+	}
+
+	idx := slices.IndexFunc(todoList, func(todo models.Todo) bool {
+		return todo.Id == int(id)
+	})
+	
+	if (idx < 0) {
+		return false, errors.New("the todo do not exist")
+	}
+
+	todoList[idx] = models.Todo{
+		Id: int(id),
+		Name: todoList[idx].Name,
+		Status: models.IN_PROGRESS,
+	}
+
+	_, err := db.Write(todoList)
+
+	if (err != nil) {
+		return false, err
 	}
 
 	return true, nil
