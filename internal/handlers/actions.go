@@ -13,6 +13,8 @@ type ListOperations interface {
 	Update(id int16, name string) (bool, error)
 
 	UpdateStatus(id int16, status models.Status) (bool, error)
+	
+	GetList(status *models.Status) ([]models.Todo, error)
 }
 
 type List struct {}
@@ -152,4 +154,28 @@ func (reader List) UpdateStatus(id int16, status models.Status) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func (reader List) GetList(status *models.Status) ([]models.Todo, error) {
+	db := database.Reader {
+		Name: "todos.json",
+	}
+
+	todoList := make([]models.Todo,0)
+
+	rError := db.Read(&todoList)
+
+	if (rError != nil || status == nil) {
+		return todoList, rError
+	}
+
+	cleaned := make([]models.Todo, 0)
+
+	for _, todo := range todoList {
+		if (todo.Status == *status) {
+			cleaned = append(cleaned, todo)
+		}
+	}
+
+	return cleaned, nil
 }
