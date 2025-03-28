@@ -12,7 +12,7 @@ type ListOperations interface {
 	Delete(id int16) (bool, error)
 	Update(id int16, name string) (bool, error)
 
-	Doing(id int16) (bool, error)
+	UpdateStatus(id int16, status models.Status) (bool, error)
 }
 
 type List struct {}
@@ -118,7 +118,7 @@ func (reader List) Update(id int16, name string) (bool, error) {
 	return true, nil
 }
 
-func (reader List) Doing(id int16) (bool, error) {
+func (reader List) UpdateStatus(id int16, status models.Status) (bool, error) {
 	db := database.Reader {
 		Name: "todos.json",
 	}
@@ -142,7 +142,7 @@ func (reader List) Doing(id int16) (bool, error) {
 	todoList[idx] = models.Todo{
 		Id: int(id),
 		Name: todoList[idx].Name,
-		Status: models.IN_PROGRESS,
+		Status: status,
 	}
 
 	_, err := db.Write(todoList)

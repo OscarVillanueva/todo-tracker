@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 	"task_traker/internal/handlers"
+	"task_traker/internal/models"
 
 	"github.com/urfave/cli/v2"
 )
@@ -101,13 +102,35 @@ func GetCommands() []*cli.Command {
 					panic("Invalid todo id!")
 				}
 
-				_, prgError := reader.Doing(int16(parsed))
+				_, prgError := reader.UpdateStatus(int16(parsed), models.IN_PROGRESS)
 
 				if (prgError != nil) {
 					panic(prgError)
 				}
 
 				fmt.Println("Mark as in progress: ", id)
+				return nil
+			},
+		},
+		{
+			Name: "complete",
+			Usage: "Mark a task as complete",
+			Action: func(ctx *cli.Context) error {
+				id := ctx.Args().First()
+
+				parsed, err := strconv.ParseInt(id, 10, 16)
+
+				if (err != nil){
+					panic("Invalid todo id!")
+				}
+
+				_, prgError := reader.UpdateStatus(int16(parsed), models.DONE)
+
+				if (prgError != nil) {
+					panic(prgError)
+				}
+
+				fmt.Println("Mark as completed: ", id)
 				return nil
 			},
 		},
