@@ -1,1 +1,5 @@
-[{"id":1,"name":"this task was updated","status":"done"}]
+[
+  { "id": 1, "name": "this task was updated", "status": "done" },
+  { "id": 2, "name": "in progress task", "status": "in_progress" },
+  { "id": 3, "name": "todo task", "status": "todo" }
+]

@@ -3,7 +3,7 @@ package models
 type Status string
 
 const (
-	CREATED Status = "created"
+	CREATED Status = "todo"
 	IN_PROGRESS Status = "in_progress"
 	DONE Status = "done"
 )

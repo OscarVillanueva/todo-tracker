@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -132,6 +133,56 @@ func GetCommands() []*cli.Command {
 
 				fmt.Println("Mark as completed: ", id)
 				return nil
+			},
+		},
+		{
+			Name: "list",
+			Usage: "Get the list of todos",
+			Flags: []cli.Flag {
+				&cli.BoolFlag{
+					Name: "completed",
+					Usage: "filter the todos by completed",
+				},
+				&cli.BoolFlag{
+					Name: "in-progress",
+					Aliases: []string{"prg"},
+					Usage: "filter the todos by progress",
+				},
+				&cli.BoolFlag{
+					Name: "todo",
+					Usage: "filter the task by todo",
+				},
+			},
+			Action: func(ctx *cli.Context) error {
+				var status models.Status		
+
+    		if ctx.Bool("completed") {
+					status = models.DONE
+    		}
+
+				if ctx.Bool("in-progress") {
+					status = models.IN_PROGRESS	
+				}
+
+				if ctx.Bool("todo") {
+					status = models.CREATED
+				}
+
+				list, err := reader.GetList(status)
+
+				if (err != nil){
+					panic(err)
+				}
+
+				bytes, bErr := json.Marshal(list)
+
+				if (bErr != nil) {
+					panic(bErr)
+				}
+
+				fmt.Printf("%s", bytes)
+
+				return nil	
 			},
 		},
 	}

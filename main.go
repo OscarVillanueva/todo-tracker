@@ -12,7 +12,7 @@ func main() {
 
 	app := &cli.App {
 		Name: "tracker",
-		Usage: "tracker todo list",
+		Usage: "tracker todo list",	
 		Commands: cmd.GetCommands(),
 	}
 

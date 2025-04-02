@@ -156,7 +156,7 @@ func (reader List) UpdateStatus(id int16, status models.Status) (bool, error) {
 	return true, nil
 }
 
-func (reader List) GetList(status *models.Status) ([]models.Todo, error) {
+func (reader List) GetList(status models.Status) ([]models.Todo, error) {
 	db := database.Reader {
 		Name: "todos.json",
 	}
@@ -165,14 +165,14 @@ func (reader List) GetList(status *models.Status) ([]models.Todo, error) {
 
 	rError := db.Read(&todoList)
 
-	if (rError != nil || status == nil) {
+	if (rError != nil || status == "") {
 		return todoList, rError
 	}
 
 	cleaned := make([]models.Todo, 0)
 
 	for _, todo := range todoList {
-		if (todo.Status == *status) {
+		if (todo.Status == status) {
 			cleaned = append(cleaned, todo)
 		}
 	}
