@@ -32,7 +32,7 @@ func (reader List) Add(todoName string) (int, error) {
 	rError := db.Read(&todoList)
 
 	if rError == nil {
-		id = len(todoList) + 1
+		id = todoList[len(todoList)-1].Id + 1
 	}
 
 	currentTime := time.Now()
