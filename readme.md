@@ -1,5 +1,7 @@
 # Task tracker app in go
 
+This a project described in https://roadmap.sh/projects/task-tracker
+
 NAME:
    tracker - tracker todo list
 
